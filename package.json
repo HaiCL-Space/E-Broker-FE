@@ -5,6 +5,12 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:admin": "turbo dev --filter=admin",
+    "dev:teacher": "turbo dev --filter=teacher",
+    "dev:student": "turbo dev --filter=student",
+    "build:admin": "turbo build --filter=admin",
+    "build:teacher": "turbo build --filter=teacher",
+    "build:student": "turbo build --filter=student",
     "lint": "turbo lint",
     "format": "turbo format",
     "typecheck": "turbo typecheck"

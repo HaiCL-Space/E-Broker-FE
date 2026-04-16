@@ -4,7 +4,10 @@
     "baseUrl": ".",
     "paths": {
       "@workspace/ui/*": ["./src/*"]
-    }
+    },
+    "types": ["node"],
+    "module": "ESNext",
+    "moduleResolution": "bundler"
   },
   "include": ["."],
   "exclude": ["node_modules", "dist"]
