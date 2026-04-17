@@ -31,7 +31,7 @@ export function DynamicBreadcrumb() {
   const segments = pathname.split("/").filter(Boolean);
 
   // Nếu là trang chủ hoặc login/register, không hiển thị breadcrumb
-  if (segments.length === 0 || ["login", "register", "forgot-password"].includes(segments[0])) {
+  if (segments.length === 0 || (segments[0] && ["login", "register", "forgot-password"].includes(segments[0]))) {
     return null;
   }
 
@@ -40,7 +40,7 @@ export function DynamicBreadcrumb() {
       <BreadcrumbList>
         {segments.map((segment, index) => {
           const path = `/${segments.slice(0, index + 1).join("/")}`;
-          const label = routeLabels[path] || segment.charAt(0).toUpperCase() + segment.slice(1);
+          const label = routeLabels[path] || (segment ? segment.charAt(0).toUpperCase() + segment.slice(1) : "");
           const isLast = index === segments.length - 1;
 
           return (

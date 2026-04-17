@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Plus, Search, Trash2 } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Plus, Search, Trash2, Eye, Star } from "lucide-react";
 
 import { Button } from "@workspace/ui/components/button";
 import { Checkbox } from "@workspace/ui/components/checkbox";
@@ -48,66 +48,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-import { AddUserDialog } from "./add-user-dialog";
-import { EditUserDialog } from "./edit-user-dialog";
-import { DeleteUserDialog } from "./delete-user-dialog";
+import { Badge } from "@workspace/ui/components/badge";
+import { InstructorUser } from "../../types/user";
+import { mockInstructors } from "../../lib/mock-data/instructors";
+import { AddInstructorDialog } from "./add-instructor-dialog";
+import { EditInstructorDialog } from "./edit-instructor-dialog";
+import { DeleteUserDialog } from "../users/delete-user-dialog";
+import { InstructorCoursesModal } from "./instructor-courses-modal";
+import { ExcelExportButton } from "@workspace/ui/components/excel-export-button";
+import { ExcelImportButton } from "@workspace/ui/components/excel-import-button";
 import { DataTablePagination } from "@workspace/ui/components/data-table-pagination";
 
-// Định nghĩa type cho User
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: "admin" | "instructor" | "student";
-  status: "active" | "inactive";
-  createdAt: string;
-};
-
-// Dữ liệu mẫu
-const data: User[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "admin",
-    status: "active",
-    createdAt: "2024-01-15",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "instructor",
-    status: "active",
-    createdAt: "2024-02-20",
-  },
-  {
-    id: "3",
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    role: "student",
-    status: "active",
-    createdAt: "2024-03-10",
-  },
-  {
-    id: "4",
-    name: "Alice Brown",
-    email: "alice@example.com",
-    role: "student",
-    status: "inactive",
-    createdAt: "2024-01-25",
-  },
-  {
-    id: "5",
-    name: "Charlie Wilson",
-    email: "charlie@example.com",
-    role: "instructor",
-    status: "active",
-    createdAt: "2024-02-15",
-  },
-];
-
-export function UsersTable() {
+export function InstructorsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -117,14 +69,17 @@ export function UsersTable() {
   const [addDialogOpen, setAddDialogOpen] = React.useState(false);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
+  const [coursesModalOpen, setCoursesModalOpen] = React.useState(false);
+  const [selectedInstructor, setSelectedInstructor] = React.useState<InstructorUser | null>(null);
 
   // Filter states
-  const [roleFilter, setRoleFilter] = React.useState<string>("all");
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
 
+  // Data state
+  const [data, setData] = React.useState<InstructorUser[]>(mockInstructors);
+
   // Định nghĩa columns
-  const columns: ColumnDef<User>[] = [
+  const columns: ColumnDef<InstructorUser>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -168,28 +123,72 @@ export function UsersTable() {
       cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
     },
     {
-      accessorKey: "role",
-      header: "Role",
+      accessorKey: "specialization",
+      header: "Specialization",
       cell: ({ row }) => {
-        const role = row.getValue("role") as string;
+        const specialization = row.getValue("specialization") as string;
         return (
-          <div className="capitalize">
-            <span
-              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                role === "admin"
-                  ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
-                  : role === "instructor"
-                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                  : "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-              }`}
-            >
-              {role}
-            </span>
-          </div>
+          <Badge variant="outline" className="font-normal">
+            {specialization}
+          </Badge>
         );
       },
-      filterFn: (row, id, value) => {
-        return value === "all" || row.getValue(id) === value;
+    },
+    {
+      accessorKey: "courses_created",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Courses
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return <div className="text-center">{row.getValue("courses_created")}</div>;
+      },
+    },
+    {
+      accessorKey: "total_students",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Students
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return <div className="text-center">{row.getValue("total_students")}</div>;
+      },
+    },
+    {
+      accessorKey: "rating",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Rating
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const rating = row.getValue("rating") as number;
+        return (
+          <div className="flex items-center gap-1">
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <span className="font-medium">{rating.toFixed(1)}</span>
+          </div>
+        );
       },
     },
     {
@@ -198,17 +197,12 @@ export function UsersTable() {
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
         return (
-          <div className="capitalize">
-            <span
-              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                status === "active"
-                  ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                  : "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300"
-              }`}
-            >
-              {status}
-            </span>
-          </div>
+          <Badge
+            variant={status === "active" ? "default" : "secondary"}
+            className="capitalize"
+          >
+            {status}
+          </Badge>
         );
       },
       filterFn: (row, id, value) => {
@@ -237,7 +231,7 @@ export function UsersTable() {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const user = row.original;
+        const instructor = row.original;
 
         return (
           <DropdownMenu>
@@ -250,15 +244,19 @@ export function UsersTable() {
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleEdit(user)}>
-                Edit User
+              <DropdownMenuItem onClick={() => handleViewCourses(instructor)}>
+                <Eye className="mr-2 h-4 w-4" />
+                View Courses
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleEdit(instructor)}>
+                Edit Instructor
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"
-                onClick={() => handleDelete(user)}
+                onClick={() => handleDelete(instructor)}
               >
-                Delete User
+                Delete Instructor
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -286,48 +284,121 @@ export function UsersTable() {
     },
   });
 
-  // Apply filters
-  React.useEffect(() => {
-    table.getColumn("role")?.setFilterValue(roleFilter);
-  }, [roleFilter, table]);
-
+  // Apply status filter
   React.useEffect(() => {
     table.getColumn("status")?.setFilterValue(statusFilter);
   }, [statusFilter, table]);
 
   // Handlers
-  const handleAdd = (data: any) => {
-    console.log("Add user:", data);
-    // TODO: Call API to add user
+  const handleAdd = (newData: any) => {
+    console.log("Add instructor:", newData);
+    // TODO: Call API to add instructor
+    const newInstructor: InstructorUser = {
+      id: `inst-${Date.now()}`,
+      ...newData,
+      role: "instructor" as const,
+      courses_created: 0,
+      total_students: 0,
+      rating: 0,
+      createdAt: new Date().toISOString().split("T")[0],
+    };
+    setData([...data, newInstructor]);
   };
 
-  const handleEdit = (user: User) => {
-    setSelectedUser(user);
+  const handleEdit = (instructor: InstructorUser) => {
+    setSelectedInstructor(instructor);
     setEditDialogOpen(true);
   };
 
-  const handleEditSubmit = (data: any) => {
-    console.log("Edit user:", selectedUser?.id, data);
-    // TODO: Call API to edit user
+  const handleEditSubmit = (updatedData: any) => {
+    console.log("Edit instructor:", selectedInstructor?.id, updatedData);
+    // TODO: Call API to edit instructor
+    setData(
+      data.map((item) =>
+        item.id === selectedInstructor?.id ? { ...item, ...updatedData } : item
+      )
+    );
   };
 
-  const handleDelete = (user: User) => {
-    setSelectedUser(user);
+  const handleDelete = (instructor: InstructorUser) => {
+    setSelectedInstructor(instructor);
     setDeleteDialogOpen(true);
   };
 
   const handleDeleteConfirm = () => {
-    console.log("Delete user:", selectedUser?.id);
-    // TODO: Call API to delete user
+    console.log("Delete instructor:", selectedInstructor?.id);
+    // TODO: Call API to delete instructor
+    setData(data.filter((item) => item.id !== selectedInstructor?.id));
     setDeleteDialogOpen(false);
-    setSelectedUser(null);
+    setSelectedInstructor(null);
   };
 
   const handleBulkDelete = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
-    console.log("Bulk delete:", selectedRows.map(row => row.original.id));
-    // TODO: Call API to bulk delete users
+    console.log("Bulk delete:", selectedRows.map((row) => row.original.id));
+    // TODO: Call API to bulk delete instructors
+    const selectedIds = selectedRows.map((row) => row.original.id);
+    setData(data.filter((item) => !selectedIds.includes(item.id)));
     setRowSelection({});
+  };
+
+  const handleViewCourses = (instructor: InstructorUser) => {
+    setSelectedInstructor(instructor);
+    setCoursesModalOpen(true);
+  };
+
+  const handleImport = (importedData: InstructorUser[]) => {
+    console.log("Import instructors:", importedData);
+    // TODO: Call API to bulk create instructors
+    setData([...data, ...importedData]);
+  };
+
+  // Excel export columns
+  const exportColumns = [
+    { key: "name" as keyof InstructorUser, header: "Name" },
+    { key: "email" as keyof InstructorUser, header: "Email" },
+    { key: "specialization" as keyof InstructorUser, header: "Specialization" },
+    { key: "bio" as keyof InstructorUser, header: "Bio" },
+    { key: "courses_created" as keyof InstructorUser, header: "Courses Created" },
+    { key: "total_students" as keyof InstructorUser, header: "Total Students" },
+    { key: "rating" as keyof InstructorUser, header: "Rating" },
+    { key: "status" as keyof InstructorUser, header: "Status" },
+    { key: "createdAt" as keyof InstructorUser, header: "Created At" },
+  ];
+
+  // Excel import validator
+  const importValidator = (row: any) => {
+    const errors: string[] = [];
+
+    if (!row.Name || row.Name.trim().length < 2) {
+      errors.push("Name is required (min 2 characters)");
+    }
+    if (!row.Email || !row.Email.includes("@")) {
+      errors.push("Valid email is required");
+    }
+    if (!row.Specialization) {
+      errors.push("Specialization is required");
+    }
+
+    if (errors.length > 0) {
+      return { valid: false, errors };
+    }
+
+    const data: InstructorUser = {
+      id: `inst-${Date.now()}-${Math.random()}`,
+      name: row.Name,
+      email: row.Email,
+      role: "instructor",
+      specialization: row.Specialization,
+      bio: row.Bio || "",
+      courses_created: 0,
+      total_students: 0,
+      rating: 0,
+      status: row.Status === "inactive" ? "inactive" : "active",
+      createdAt: new Date().toISOString().split("T")[0] || "",
+    };
+
+    return { valid: true, data };
   };
 
   return (
@@ -336,15 +407,26 @@ export function UsersTable() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>User List</CardTitle>
+              <CardTitle>Instructor List</CardTitle>
               <CardDescription>
-                Danh sách tất cả người dùng trong hệ thống
+                Danh sách tất cả giảng viên trong hệ thống
               </CardDescription>
             </div>
-            <Button onClick={() => setAddDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add User
-            </Button>
+            <div className="flex items-center gap-2">
+              <ExcelImportButton
+                onImport={handleImport}
+                validator={importValidator}
+              />
+              <ExcelExportButton
+                data={data}
+                filename="instructors"
+                columns={exportColumns}
+              />
+              <Button onClick={() => setAddDialogOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Instructor
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -354,25 +436,13 @@ export function UsersTable() {
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search by name or email..."
-                value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                value={(table.getColumn("name")?.getFilterValue() as string) || ""}
                 onChange={(event) =>
                   table.getColumn("name")?.setFilterValue(event.target.value)
                 }
                 className="max-w-sm pl-8"
               />
             </div>
-
-            <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Roles</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="instructor">Instructor</SelectItem>
-                <SelectItem value="student">Student</SelectItem>
-              </SelectContent>
-            </Select>
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[150px]">
@@ -455,22 +525,27 @@ export function UsersTable() {
       </Card>
 
       {/* Dialogs */}
-      <AddUserDialog
+      <AddInstructorDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onSubmit={handleAdd}
       />
-      <EditUserDialog
+      <EditInstructorDialog
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
         onSubmit={handleEditSubmit}
-        user={selectedUser}
+        instructor={selectedInstructor}
       />
       <DeleteUserDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDeleteConfirm}
-        user={selectedUser}
+        user={selectedInstructor}
+      />
+      <InstructorCoursesModal
+        open={coursesModalOpen}
+        onOpenChange={setCoursesModalOpen}
+        instructor={selectedInstructor}
       />
     </>
   );

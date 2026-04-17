@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Plus, Search, Trash2 } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Plus, Search, Trash2, Eye } from "lucide-react";
 
 import { Button } from "@workspace/ui/components/button";
 import { Checkbox } from "@workspace/ui/components/checkbox";
@@ -48,66 +48,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-import { AddUserDialog } from "./add-user-dialog";
-import { EditUserDialog } from "./edit-user-dialog";
-import { DeleteUserDialog } from "./delete-user-dialog";
+import { Badge } from "@workspace/ui/components/badge";
+import { Progress } from "@workspace/ui/components/progress";
+import { StudentUser } from "../../types/user";
+import { mockStudents } from "../../lib/mock-data/students";
+import { AddStudentDialog } from "./add-student-dialog";
+import { EditStudentDialog } from "./edit-student-dialog";
+import { DeleteUserDialog } from "../users/delete-user-dialog";
+import { StudentProgressModal } from "./student-progress-modal";
+import { ExcelExportButton } from "@workspace/ui/components/excel-export-button";
+import { ExcelImportButton } from "@workspace/ui/components/excel-import-button";
 import { DataTablePagination } from "@workspace/ui/components/data-table-pagination";
 
-// Định nghĩa type cho User
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: "admin" | "instructor" | "student";
-  status: "active" | "inactive";
-  createdAt: string;
-};
-
-// Dữ liệu mẫu
-const data: User[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "admin",
-    status: "active",
-    createdAt: "2024-01-15",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "instructor",
-    status: "active",
-    createdAt: "2024-02-20",
-  },
-  {
-    id: "3",
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    role: "student",
-    status: "active",
-    createdAt: "2024-03-10",
-  },
-  {
-    id: "4",
-    name: "Alice Brown",
-    email: "alice@example.com",
-    role: "student",
-    status: "inactive",
-    createdAt: "2024-01-25",
-  },
-  {
-    id: "5",
-    name: "Charlie Wilson",
-    email: "charlie@example.com",
-    role: "instructor",
-    status: "active",
-    createdAt: "2024-02-15",
-  },
-];
-
-export function UsersTable() {
+export function StudentsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -117,14 +70,18 @@ export function UsersTable() {
   const [addDialogOpen, setAddDialogOpen] = React.useState(false);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
+  const [progressModalOpen, setProgressModalOpen] = React.useState(false);
+  const [selectedStudent, setSelectedStudent] = React.useState<StudentUser | null>(null);
 
   // Filter states
-  const [roleFilter, setRoleFilter] = React.useState<string>("all");
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
+  const [gradeLevelFilter, setGradeLevelFilter] = React.useState<string>("all");
+
+  // Data state
+  const [data, setData] = React.useState<StudentUser[]>(mockStudents);
 
   // Định nghĩa columns
-  const columns: ColumnDef<User>[] = [
+  const columns: ColumnDef<StudentUser>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -168,28 +125,80 @@ export function UsersTable() {
       cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
     },
     {
-      accessorKey: "role",
-      header: "Role",
+      accessorKey: "grade_level",
+      header: "Grade Level",
       cell: ({ row }) => {
-        const role = row.getValue("role") as string;
+        const gradeLevel = row.getValue("grade_level") as string;
+        const colorMap = {
+          Beginner: "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
+          Intermediate: "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
+          Advanced: "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300",
+        };
         return (
-          <div className="capitalize">
-            <span
-              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                role === "admin"
-                  ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
-                  : role === "instructor"
-                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                  : "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-              }`}
-            >
-              {role}
-            </span>
-          </div>
+          <Badge variant="outline" className={colorMap[gradeLevel as keyof typeof colorMap]}>
+            {gradeLevel}
+          </Badge>
         );
       },
       filterFn: (row, id, value) => {
         return value === "all" || row.getValue(id) === value;
+      },
+    },
+    {
+      accessorKey: "courses_enrolled",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Courses
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return <div className="text-center">{row.getValue("courses_enrolled")}</div>;
+      },
+    },
+    {
+      accessorKey: "progress_percentage",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Progress
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const progress = row.getValue("progress_percentage") as number;
+        return (
+          <div className="flex items-center gap-2">
+            <Progress value={progress} className="w-20" />
+            <span className="text-sm font-medium">{progress}%</span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "total_score",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Score
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return <div className="text-center font-medium">{row.getValue("total_score")}</div>;
       },
     },
     {
@@ -198,17 +207,12 @@ export function UsersTable() {
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
         return (
-          <div className="capitalize">
-            <span
-              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                status === "active"
-                  ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                  : "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300"
-              }`}
-            >
-              {status}
-            </span>
-          </div>
+          <Badge
+            variant={status === "active" ? "default" : "secondary"}
+            className="capitalize"
+          >
+            {status}
+          </Badge>
         );
       },
       filterFn: (row, id, value) => {
@@ -216,20 +220,20 @@ export function UsersTable() {
       },
     },
     {
-      accessorKey: "createdAt",
+      accessorKey: "enrollment_date",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Created At
+            Enrolled
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => {
-        const date = new Date(row.getValue("createdAt"));
+        const date = new Date(row.getValue("enrollment_date"));
         return <div>{date.toLocaleDateString()}</div>;
       },
     },
@@ -237,7 +241,7 @@ export function UsersTable() {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const user = row.original;
+        const student = row.original;
 
         return (
           <DropdownMenu>
@@ -250,15 +254,19 @@ export function UsersTable() {
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleEdit(user)}>
-                Edit User
+              <DropdownMenuItem onClick={() => handleViewProgress(student)}>
+                <Eye className="mr-2 h-4 w-4" />
+                View Progress
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleEdit(student)}>
+                Edit Student
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"
-                onClick={() => handleDelete(user)}
+                onClick={() => handleDelete(student)}
               >
-                Delete User
+                Delete Student
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -288,46 +296,125 @@ export function UsersTable() {
 
   // Apply filters
   React.useEffect(() => {
-    table.getColumn("role")?.setFilterValue(roleFilter);
-  }, [roleFilter, table]);
-
-  React.useEffect(() => {
     table.getColumn("status")?.setFilterValue(statusFilter);
   }, [statusFilter, table]);
 
+  React.useEffect(() => {
+    table.getColumn("grade_level")?.setFilterValue(gradeLevelFilter);
+  }, [gradeLevelFilter, table]);
+
   // Handlers
-  const handleAdd = (data: any) => {
-    console.log("Add user:", data);
-    // TODO: Call API to add user
+  const handleAdd = (newData: any) => {
+    console.log("Add student:", newData);
+    // TODO: Call API to add student
+    const newStudent: StudentUser = {
+      id: `stud-${Date.now()}`,
+      ...newData,
+      role: "student" as const,
+      courses_enrolled: 0,
+      progress_percentage: 0,
+      total_score: 0,
+      createdAt: new Date().toISOString().split("T")[0],
+    };
+    setData([...data, newStudent]);
   };
 
-  const handleEdit = (user: User) => {
-    setSelectedUser(user);
+  const handleEdit = (student: StudentUser) => {
+    setSelectedStudent(student);
     setEditDialogOpen(true);
   };
 
-  const handleEditSubmit = (data: any) => {
-    console.log("Edit user:", selectedUser?.id, data);
-    // TODO: Call API to edit user
+  const handleEditSubmit = (updatedData: any) => {
+    console.log("Edit student:", selectedStudent?.id, updatedData);
+    // TODO: Call API to edit student
+    setData(
+      data.map((item) =>
+        item.id === selectedStudent?.id ? { ...item, ...updatedData } : item
+      )
+    );
   };
 
-  const handleDelete = (user: User) => {
-    setSelectedUser(user);
+  const handleDelete = (student: StudentUser) => {
+    setSelectedStudent(student);
     setDeleteDialogOpen(true);
   };
 
   const handleDeleteConfirm = () => {
-    console.log("Delete user:", selectedUser?.id);
-    // TODO: Call API to delete user
+    console.log("Delete student:", selectedStudent?.id);
+    // TODO: Call API to delete student
+    setData(data.filter((item) => item.id !== selectedStudent?.id));
     setDeleteDialogOpen(false);
-    setSelectedUser(null);
+    setSelectedStudent(null);
   };
 
   const handleBulkDelete = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
-    console.log("Bulk delete:", selectedRows.map(row => row.original.id));
-    // TODO: Call API to bulk delete users
+    console.log("Bulk delete:", selectedRows.map((row) => row.original.id));
+    // TODO: Call API to bulk delete students
+    const selectedIds = selectedRows.map((row) => row.original.id);
+    setData(data.filter((item) => !selectedIds.includes(item.id)));
     setRowSelection({});
+  };
+
+  const handleViewProgress = (student: StudentUser) => {
+    setSelectedStudent(student);
+    setProgressModalOpen(true);
+  };
+
+  const handleImport = (importedData: StudentUser[]) => {
+    console.log("Import students:", importedData);
+    // TODO: Call API to bulk create students
+    setData([...data, ...importedData]);
+  };
+
+  // Excel export columns
+  const exportColumns = [
+    { key: "name" as keyof StudentUser, header: "Name" },
+    { key: "email" as keyof StudentUser, header: "Email" },
+    { key: "grade_level" as keyof StudentUser, header: "Grade Level" },
+    { key: "enrollment_date" as keyof StudentUser, header: "Enrollment Date" },
+    { key: "courses_enrolled" as keyof StudentUser, header: "Courses Enrolled" },
+    { key: "progress_percentage" as keyof StudentUser, header: "Progress %" },
+    { key: "total_score" as keyof StudentUser, header: "Total Score" },
+    { key: "status" as keyof StudentUser, header: "Status" },
+  ];
+
+  // Excel import validator
+  const importValidator = (row: any) => {
+    const errors: string[] = [];
+
+    if (!row.Name || row.Name.trim().length < 2) {
+      errors.push("Name is required (min 2 characters)");
+    }
+    if (!row.Email || !row.Email.includes("@")) {
+      errors.push("Valid email is required");
+    }
+    if (!row["Grade Level"] || !["Beginner", "Intermediate", "Advanced"].includes(row["Grade Level"])) {
+      errors.push("Grade Level must be Beginner, Intermediate, or Advanced");
+    }
+    if (!row["Enrollment Date"]) {
+      errors.push("Enrollment Date is required");
+    }
+
+    if (errors.length > 0) {
+      return { valid: false, errors };
+    }
+
+    const data: StudentUser = {
+      id: `stud-${Date.now()}-${Math.random()}`,
+      name: row.Name,
+      email: row.Email,
+      role: "student",
+      grade_level: row["Grade Level"] as "Beginner" | "Intermediate" | "Advanced",
+      enrollment_date: row["Enrollment Date"],
+      courses_enrolled: 0,
+      progress_percentage: 0,
+      total_score: 0,
+      status: row.Status === "inactive" ? "inactive" : "active",
+      createdAt: new Date().toISOString().split("T")[0] || "",
+    };
+
+    return { valid: true, data };
   };
 
   return (
@@ -336,15 +423,26 @@ export function UsersTable() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>User List</CardTitle>
+              <CardTitle>Student List</CardTitle>
               <CardDescription>
-                Danh sách tất cả người dùng trong hệ thống
+                Danh sách tất cả học viên trong hệ thống
               </CardDescription>
             </div>
-            <Button onClick={() => setAddDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add User
-            </Button>
+            <div className="flex items-center gap-2">
+              <ExcelImportButton
+                onImport={handleImport}
+                validator={importValidator}
+              />
+              <ExcelExportButton
+                data={data}
+                filename="students"
+                columns={exportColumns}
+              />
+              <Button onClick={() => setAddDialogOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Student
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -354,7 +452,7 @@ export function UsersTable() {
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search by name or email..."
-                value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                value={(table.getColumn("name")?.getFilterValue() as string) || ""}
                 onChange={(event) =>
                   table.getColumn("name")?.setFilterValue(event.target.value)
                 }
@@ -362,15 +460,15 @@ export function UsersTable() {
               />
             </div>
 
-            <Select value={roleFilter} onValueChange={setRoleFilter}>
+            <Select value={gradeLevelFilter} onValueChange={setGradeLevelFilter}>
               <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Role" />
+                <SelectValue placeholder="Grade Level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Roles</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="instructor">Instructor</SelectItem>
-                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="all">All Levels</SelectItem>
+                <SelectItem value="Beginner">Beginner</SelectItem>
+                <SelectItem value="Intermediate">Intermediate</SelectItem>
+                <SelectItem value="Advanced">Advanced</SelectItem>
               </SelectContent>
             </Select>
 
@@ -455,22 +553,27 @@ export function UsersTable() {
       </Card>
 
       {/* Dialogs */}
-      <AddUserDialog
+      <AddStudentDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onSubmit={handleAdd}
       />
-      <EditUserDialog
+      <EditStudentDialog
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
         onSubmit={handleEditSubmit}
-        user={selectedUser}
+        student={selectedStudent}
       />
       <DeleteUserDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDeleteConfirm}
-        user={selectedUser}
+        user={selectedStudent}
+      />
+      <StudentProgressModal
+        open={progressModalOpen}
+        onOpenChange={setProgressModalOpen}
+        student={selectedStudent}
       />
     </>
   );
