@@ -1,59 +1,60 @@
-import { CourseFilters, CourseHeroSection, CourseGrid } from "@/components/courses"
+import { mockPrograms } from "@/lib/training-mock-data"
+import {
+  TrainingHeader,
+  FeaturedProgramCard,
+  AchievementCard,
+  StreakCard,
+  ProgramCard,
+  NewsletterSection,
+} from "@/components/training"
 
-export default function CoursesPage() {
+export default function TrainingPage() {
+  const featuredProgram = mockPrograms[0]!
+  const otherPrograms = mockPrograms.slice(1)
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Main Content */}
-      <main className="mx-auto w-full max-w-7xl px-8 py-12">
-        {/* Hero Section with Suggested Courses */}
-        <CourseHeroSection />
-        
-        {/* Filters */}
-        <CourseFilters />
-        
-        {/* All Courses Grid */}
-        <CourseGrid />
-      </main>
-      
-      {/* Footer */}
-      <footer className="mt-auto border-t border-slate-200/50 bg-slate-100/50 px-8 py-12 dark:border-slate-700/50 dark:bg-slate-900/50">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 text-sm leading-relaxed md:grid-cols-2">
-          <div className="flex flex-col gap-2">
-            <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-              Lumina Academy
-            </span>
-            <span className="text-slate-500 dark:text-slate-400">
-              © 2024 Lumina Academy. Engineered for the Academic Luminary.
-            </span>
+    <div className="bg-[#f8f9fa]">
+      <main className="mx-auto max-w-7xl px-6 py-12 space-y-16">
+        <TrainingHeader />
+
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <FeaturedProgramCard program={featuredProgram} />
+
+          <div className="lg:col-span-4 space-y-8">
+            <AchievementCard />
+            <StreakCard />
           </div>
-          <nav className="flex flex-wrap gap-6 md:justify-end">
+        </section>
+
+        <section className="space-y-8">
+          <div className="flex items-end justify-between border-b border-[#e1e3e4] pb-6">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">
+                Chương Trình Đào Tạo
+              </h2>
+              <p className="text-[#424654]">
+                Được đề xuất dựa trên mục tiêu nghề nghiệp của bạn
+              </p>
+            </div>
             <a
+              className="text-[#0040a1] font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all"
               href="#"
-              className="text-slate-500 opacity-80 transition-colors hover:text-blue-600 hover:opacity-100 dark:text-slate-400 dark:hover:text-blue-400"
             >
-              Academic Integrity
+              Xem Tất Cả
+              <span className="material-symbols-outlined text-sm">
+                arrow_forward
+              </span>
             </a>
-            <a
-              href="#"
-              className="text-slate-500 opacity-80 transition-colors hover:text-blue-600 hover:opacity-100 dark:text-slate-400 dark:hover:text-blue-400"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="#"
-              className="text-slate-500 opacity-80 transition-colors hover:text-blue-600 hover:opacity-100 dark:text-slate-400 dark:hover:text-blue-400"
-            >
-              Curriculum Standards
-            </a>
-            <a
-              href="#"
-              className="text-slate-500 opacity-80 transition-colors hover:text-blue-600 hover:opacity-100 dark:text-slate-400 dark:hover:text-blue-400"
-            >
-              Support
-            </a>
-          </nav>
-        </div>
-      </footer>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {otherPrograms.map((program) => (
+              <ProgramCard key={program.id} program={program} />
+            ))}
+          </div>
+        </section>
+
+        <NewsletterSection />
+      </main>
     </div>
   )
 }
