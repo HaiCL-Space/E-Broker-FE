@@ -1,6 +1,7 @@
 // Core
 export * from "./client.js"
 export * from "./types.js"
+export * from "./types/error-code.js"
 
 // Services
 export * from "./services/base.service.js"
