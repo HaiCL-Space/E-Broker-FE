@@ -3,13 +3,13 @@ export { SiteHeader } from "./layout/site-header"
 export { AppSidebar } from "./layout/app-sidebar"
 
 // Dashboard shell components
-export { NotificationDropdown } from "./shadcn-space/blocks/dashboard-shell/notification-dropdown"
-export { UserDropdown } from "./shadcn-space/blocks/dashboard-shell/user-dropdown"
-export { EarningReportChart } from "./shadcn-space/blocks/dashboard-shell/earning-report-chart"
-export { SalesOverviewChart } from "./shadcn-space/blocks/dashboard-shell/sales-overview-chart"
-export { Statistics } from "./shadcn-space/blocks/dashboard-shell/statistics"
-export { TopProductTable } from "./shadcn-space/blocks/dashboard-shell/top-product-table"
-export { SalesByCountryWidget } from "./shadcn-space/blocks/dashboard-shell/salesbycountrywidget"
+export { default as NotificationDropdown } from "./shadcn-space/blocks/dashboard-shell/notification-dropdown"
+export { default as UserDropdown } from "./shadcn-space/blocks/dashboard-shell/user-dropdown"
+export { default as EarningReportChart } from "./shadcn-space/blocks/dashboard-shell/earning-report-chart"
+export { default as SalesOverviewChart } from "./shadcn-space/blocks/dashboard-shell/sales-overview-chart"
+export { default as Statistics } from "./shadcn-space/blocks/dashboard-shell/statistics"
+export { default as TopProductTable } from "./shadcn-space/blocks/dashboard-shell/top-product-table"
+export { default as SalesByCountryWidget } from "./shadcn-space/blocks/dashboard-shell/salesbycountrywidget"
 
 // Users
 export { UsersTable } from "./users/users-table"

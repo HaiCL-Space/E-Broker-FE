@@ -6,7 +6,7 @@ import {
   RefreshDto,
   RefreshResponse,
   RegisterDto,
-} from "src/types/auth.types"
+} from "../types/auth.types"
 import { BaseService } from "./base.service"
 
 export class AuthService extends BaseService {
