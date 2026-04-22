@@ -17,7 +17,7 @@ export interface UpdateSpecializationDto {
 }
 
 export interface Specialization {
-  id: string
+  _id: string
   programId: string
   title: string
   description?: string

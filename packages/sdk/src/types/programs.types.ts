@@ -26,7 +26,7 @@ export interface UpdateProgramBrandingDto {
 }
 
 export interface Program {
-  id: string
+  _id: string
   tenantId: string
   title: string
   description?: string

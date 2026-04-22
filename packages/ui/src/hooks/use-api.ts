@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { apiClient } from "@workspace/sdk"
-import type { 
-  PaginationQuery, 
-  LessonListQuery, 
-  SlideFilterQuery 
+import type {
+  PaginationQuery,
+  LessonListQuery,
+  SlideFilterQuery,
 } from "@workspace/sdk"
 
 // --- Programs ---

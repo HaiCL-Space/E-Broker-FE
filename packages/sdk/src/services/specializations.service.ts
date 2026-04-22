@@ -11,7 +11,9 @@ export class SpecializationsService extends BaseService {
   }
 
   list(programId: string) {
-    return this.client.get<Specialization[]>(`/specializations?programId=${programId}`)
+    return this.client.get<Specialization[]>(
+      `/specializations?programId=${programId}`
+    )
   }
 
   getById(id: string) {

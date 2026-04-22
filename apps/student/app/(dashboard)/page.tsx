@@ -18,7 +18,11 @@ import type { Course } from "@/lib/types"
 import type { Program, PaginatedResponse } from "@workspace/sdk"
 
 export default function DashboardPage() {
-  const { data: programs, isLoading, error } = usePrograms({ page: 1, limit: 10 })
+  const {
+    data: programs,
+    isLoading,
+    error,
+  } = usePrograms({ page: 1, limit: 10 })
 
   if (isLoading) {
     return (
@@ -43,20 +47,21 @@ export default function DashboardPage() {
 
   // Map SDK Program to FE Course
   const mappedCourses: Course[] = programsList.map((p: Program) => ({
-    id: p.id,
+    id: p._id,
     title: p.title,
     titleVi: p.title, // Default to title if no translation
     description: p.description || "",
     descriptionVi: p.description || "",
-    thumbnail: p.thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop",
+    thumbnail:
+      p.thumbnail ||
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop",
     progress: 0,
-    totalLessons: 0,
+    totalLessons: 10,
     completedLessons: 0,
     remainingHours: 0,
     gradientFrom: "from-blue-500",
     gradientTo: "to-indigo-600",
   }))
-
   return (
     <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-12 px-4 py-8 sm:px-6 lg:px-8">
       {/* Top Content Row */}
