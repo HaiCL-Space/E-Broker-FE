@@ -1,58 +1,51 @@
+"use client"
+
+import { useState } from "react"
 import { mockPrograms } from "@/lib/training-mock-data"
 import {
-  TrainingHeader,
-  FeaturedProgramCard,
-  AchievementCard,
-  StreakCard,
-  ProgramCard,
-  NewsletterSection,
+  TrainingTabs,
+  TopicsView,
+  RoadmapView,
+  CatalogView,
+  LearningProgressCard,
 } from "@/components/training"
 
+const tabs = [
+  { id: "topics", label: "Chủ đề" },
+  { id: "roadmap", label: "Lộ trình" },
+  { id: "catalog", label: "Ca-ta-lô" },
+]
+
 export default function TrainingPage() {
+  const [activeTab, setActiveTab] = useState("topics")
   const featuredProgram = mockPrograms[0]!
   const otherPrograms = mockPrograms.slice(1)
 
   return (
-    <div className="bg-[#f8f9fa]">
-      <main className="mx-auto max-w-7xl px-6 py-12 space-y-16">
-        <TrainingHeader />
+    <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-6 sm:gap-8 px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+      {/* Progress Section */}
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
+        <LearningProgressCard program={featuredProgram} />
+      </div>
 
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <FeaturedProgramCard program={featuredProgram} />
+      {/* Tabs Navigation  */}
+      <TrainingTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
-          <div className="lg:col-span-4 space-y-8">
-            <AchievementCard />
-            <StreakCard />
-          </div>
-        </section>
-
-        <section className="space-y-8">
-          <div className="flex items-end justify-between border-b border-[#e1e3e4] pb-6">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">
-                Chương Trình Đào Tạo
-              </h2>
-              <p className="text-[#424654]">
-                Được đề xuất dựa trên mục tiêu nghề nghiệp của bạn
-              </p>
-            </div>
-            <a
-              className="text-[#0040a1] font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all"
-              href="#"
-            >
-              Xem Tất Cả
-              <span className="material-symbols-outlined text-sm">
-                arrow_forward
-              </span>
-            </a>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {otherPrograms.map((program) => (
-              <ProgramCard key={program.id} program={program} />
-            ))}
-          </div>
-        </section>
-      </main>
+      {/* Tab Content */}
+      <div className="min-h-[400px]">
+        {activeTab === "topics" && (
+          <TopicsView 
+            specializations={featuredProgram.specializations} 
+            programId={featuredProgram.id}
+          />
+        )}
+        {activeTab === "roadmap" && (
+          <RoadmapView program={featuredProgram} />
+        )}
+        {activeTab === "catalog" && (
+          <CatalogView programs={otherPrograms} />
+        )}
+      </div>
     </div>
   )
 }

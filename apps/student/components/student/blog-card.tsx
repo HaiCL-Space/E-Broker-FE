@@ -41,7 +41,7 @@ export function BlogCard({ post }: BlogCardProps) {
           href="#"
           className="mt-auto flex items-center gap-1 text-sm font-semibold text-blue-600 transition-all group-hover:gap-2 dark:text-blue-400"
         >
-          Read More
+          Đọc tiếp
           <ArrowRightIcon className="h-4 w-4" />
         </Link>
       </div>
@@ -57,8 +57,8 @@ interface BlogSectionProps {
 }
 
 export function BlogSection({
-  title = "From the Blog",
-  viewAllLabel = "View All Articles",
+  title = "Bài viết",
+  viewAllLabel = "Xem thêm",
   viewAllHref = "#",
   posts,
 }: BlogSectionProps) {
