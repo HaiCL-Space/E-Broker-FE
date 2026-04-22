@@ -12,7 +12,7 @@ import type {
 export const currentUser: User = {
   id: "1",
   name: "TS. Elias Vance",
-  email: "elias.vance@lumina.edu",
+  email: "elias.vance@e-broker.edu",
   avatar:
     "https://lh3.googleusercontent.com/aida-public/AB6AXuD8iFqwbcNoMNf6AQao_BMFH1ERsJg_oyiXdJNcfxyZrZ46uFRhBSvsqXow6wFfuCFdCTEAGUVjfKbcBqDOlRxdLzPkjSn8ce2Ni-8gQEaRfG5lrUfwl2vnFioHZmd5uGjTd_IUTvxcXOZq-osusFxjver1QVg-o2PU_Nru3i79YjXiU5su5jR9SAs5NMGHNI0cbrVmUT-lJFlF_MlYz8f6Qp9ZoBg1F3jTDPqB8_qCLK2kQtHToeHLl96PQUr2yVxTkk1QredblMs",
   role: "student", // sinh viên
@@ -593,39 +593,39 @@ export interface ClassParticipant {
 
 export const classParticipants: Record<string, ClassParticipant[]> = {
   oc1: [
-    { id: "p1", name: "Nguyễn Văn A", email: "nguyenvana@example.com", status: "confirmed" },
-    { id: "p2", name: "Trần Thị B", email: "tranthib@example.com", status: "confirmed" },
-    { id: "p3", name: "Lê Văn C", email: "levanc@example.com", status: "pending" },
-    { id: "p4", name: "Phạm Thị D", email: "phamthid@example.com", status: "confirmed" },
-    { id: "p5", name: "Hoàng Văn E", email: "hoangvane@example.com", status: "confirmed" },
+    { id: "p1", name: "Nguyễn Văn A", email: "nguyenvana@e-broker.com", status: "confirmed" },
+    { id: "p2", name: "Trần Thị B", email: "tranthib@e-broker.com", status: "confirmed" },
+    { id: "p3", name: "Lê Văn C", email: "levanc@e-broker.com", status: "pending" },
+    { id: "p4", name: "Phạm Thị D", email: "phamthid@e-broker.com", status: "confirmed" },
+    { id: "p5", name: "Hoàng Văn E", email: "hoangvane@e-broker.com", status: "confirmed" },
   ],
   oc2: [
-    { id: "p6", name: "Đỗ Thị F", email: "dothif@example.com", status: "confirmed" },
-    { id: "p7", name: "Vũ Văn G", email: "vuvang@example.com", status: "pending" },
-    { id: "p8", name: "Bùi Thị H", email: "buithih@example.com", status: "confirmed" },
+    { id: "p6", name: "Đỗ Thị F", email: "dothif@e-broker.com", status: "confirmed" },
+    { id: "p7", name: "Vũ Văn G", email: "vuvang@e-broker.com", status: "pending" },
+    { id: "p8", name: "Bùi Thị H", email: "buithih@e-broker.com", status: "confirmed" },
   ],
   oc3: [
-    { id: "p9", name: "Ngô Văn I", email: "ngovani@example.com", status: "confirmed" },
-    { id: "p10", name: "Dương Thị K", email: "duongthik@example.com", status: "confirmed" },
-    { id: "p11", name: "Lý Văn L", email: "lyvanl@example.com", status: "pending" },
+    { id: "p9", name: "Ngô Văn I", email: "ngovani@e-broker.com", status: "confirmed" },
+    { id: "p10", name: "Dương Thị K", email: "duongthik@e-broker.com", status: "confirmed" },
+    { id: "p11", name: "Lý Văn L", email: "lyvanl@e-broker.com", status: "pending" },
   ],
   oc4: [
-    { id: "p12", name: "Mai Thị M", email: "maithim@example.com", status: "confirmed" },
-    { id: "p13", name: "Phan Văn N", email: "phanvann@example.com", status: "confirmed" },
+    { id: "p12", name: "Mai Thị M", email: "maithim@e-broker.com", status: "confirmed" },
+    { id: "p13", name: "Phan Văn N", email: "phanvann@e-broker.com", status: "confirmed" },
   ],
   oc5: [
-    { id: "p14", name: "Trương Thị O", email: "truongthio@example.com", status: "pending" },
-    { id: "p15", name: "Lương Văn P", email: "luongvanp@example.com", status: "confirmed" },
+    { id: "p14", name: "Trương Thị O", email: "truongthio@e-broker.com", status: "pending" },
+    { id: "p15", name: "Lương Văn P", email: "luongvanp@e-broker.com", status: "confirmed" },
   ],
   oc6: [
-    { id: "p16", name: "Hồ Thị Q", email: "hothiq@example.com", status: "confirmed" },
-    { id: "p17", name: "Tô Văn R", email: "tovanr@example.com", status: "confirmed" },
-    { id: "p18", name: "Đinh Thị S", email: "dinhthis@example.com", status: "confirmed" },
-    { id: "p19", name: "Chu Văn T", email: "chuvant@example.com", status: "confirmed" },
+    { id: "p16", name: "Hồ Thị Q", email: "hothiq@e-broker.com", status: "confirmed" },
+    { id: "p17", name: "Tô Văn R", email: "tovanr@e-broker.com", status: "confirmed" },
+    { id: "p18", name: "Đinh Thị S", email: "dinhthis@e-broker.com", status: "confirmed" },
+    { id: "p19", name: "Chu Văn T", email: "chuvant@e-broker.com", status: "confirmed" },
   ],
   oc7: [
-    { id: "p20", name: "Tạ Thị U", email: "tathiu@example.com", status: "confirmed" },
-    { id: "p21", name: "Lâm Văn V", email: "lamvanv@example.com", status: "confirmed" },
+    { id: "p20", name: "Tạ Thị U", email: "tathiu@e-broker.com", status: "confirmed" },
+    { id: "p21", name: "Lâm Văn V", email: "lamvanv@e-broker.com", status: "confirmed" },
   ],
 }
 

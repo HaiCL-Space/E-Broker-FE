@@ -32,24 +32,24 @@ export default function TimelinePage() {
   }, [activeTab, searchQuery])
 
   return (
-    <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-4 sm:gap-6 lg:gap-8 px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-headline font-bold text-slate-900 dark:text-slate-100">
-            Dòng thờ gian
+          <h1 className="text-xl sm:text-2xl font-headline font-bold text-slate-900 dark:text-slate-100">
+            Dòng thời gian
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             Cập nhật tin tức và hoạt động mới nhất từ cộng đồng
           </p>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
         {/* Left Sidebar */}
-        <div className="w-full lg:w-72 xl:w-80 flex-shrink-0">
-          <div className="sticky top-24">
+        <div className="w-full lg:w-72 xl:w-80 flex-shrink-0 order-first lg:order-none">
+          <div className="lg:sticky lg:top-20 xl:top-24">
             <TimelineSidebar
               activeTab={activeTab}
               onTabChange={setActiveTab}
