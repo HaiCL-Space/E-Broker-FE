@@ -47,14 +47,18 @@ export function ExplorePostCard({ post, viewMode = "list" }: ExplorePostCardProp
             className={cn(
                 "group bg-surface-container-lowest rounded-xl border border-outline-variant/15 overflow-hidden",
                 "hover:shadow-lg transition-all duration-300",
-                isGrid ? "flex flex-col" : "flex flex-col sm:flex-row gap-5 p-5"
+                isGrid 
+                    ? "flex flex-col" 
+                    : "flex flex-row sm:flex-row gap-3 p-3 sm:p-5"
             )}
         >
             {/* Thumbnail */}
             <div
                 className={cn(
                     "relative overflow-hidden bg-slate-100 flex-shrink-0",
-                    isGrid ? "w-full h-48" : "w-full sm:w-48 h-48 sm:h-32 rounded-lg"
+                    isGrid 
+                        ? "w-full h-40 sm:h-48" 
+                        : "w-24 h-24 sm:w-40 md:w-48 sm:h-32 rounded-lg"
                 )}
             >
                 <Image
@@ -66,26 +70,26 @@ export function ExplorePostCard({ post, viewMode = "list" }: ExplorePostCardProp
             </div>
 
             {/* Content */}
-            <div className={cn("flex flex-col flex-1 min-w-0", isGrid && "p-5")}>
+            <div className={cn("flex flex-col flex-1 min-w-0", isGrid && "p-4 sm:p-5")}>
                 {/* Title */}
                 <Link href={`/timeline/${post.id}`}>
-                    <h3 className="font-semibold text-slate-900 dark:text-slate-100 line-clamp-2 group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100 line-clamp-2 group-hover:text-primary transition-colors">
                         {post.title}
                     </h3>
                 </Link>
 
                 {/* Excerpt */}
-                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
                     {post.excerpt}
                 </p>
 
                 {/* Tags */}
                 {post.tags && post.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
                         {post.tags.slice(0, 3).map((tag) => (
                             <span
                                 key={tag}
-                                className="px-2 py-0.5 text-xs bg-primary/10 text-primary rounded-full"
+                                className="px-1.5 sm:px-2 py-0.5 text-xs bg-primary/10 text-primary rounded-full"
                             >
                                 {tag}
                             </span>
@@ -94,46 +98,46 @@ export function ExplorePostCard({ post, viewMode = "list" }: ExplorePostCardProp
                 )}
 
                 {/* Footer */}
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100 dark:border-slate-700/50">
+                <div className="flex items-center justify-between mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-700/50 gap-2">
                     {/* Author */}
-                    <div className="flex items-center gap-2">
-                        <Avatar className="h-7 w-7">
+                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                        <Avatar className="h-6 w-6 sm:h-7 sm:w-7 flex-shrink-0">
                             <AvatarImage src={post.author.avatar} alt={post.author.name} />
                             <AvatarFallback className="text-xs bg-primary/10 text-primary">
                                 {post.author.name.split(" ").map((n) => n[0]).join("")}
                             </AvatarFallback>
                         </Avatar>
-                        <div className="text-xs">
-                            <p className="font-medium text-slate-700 dark:text-slate-300">
+                        <div className="text-xs min-w-0 overflow-hidden">
+                            <p className="font-medium text-slate-700 dark:text-slate-300 truncate">
                                 {post.author.name}
                             </p>
-                            <p className="text-slate-500">{post.timestamp}</p>
+                            <p className="text-slate-500 hidden sm:block">{post.timestamp}</p>
                         </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={handleLike}
                             className={cn(
-                                "h-8 px-2 gap-1.5 rounded-full text-xs",
+                                "h-7 sm:h-8 px-1.5 sm:px-2 gap-1 sm:gap-1.5 rounded-full text-xs",
                                 isLiked
                                     ? "text-blue-600 bg-blue-50"
                                     : "text-slate-500 hover:bg-slate-100"
                             )}
                         >
-                            <ThumbsUp className={cn("h-3.5 w-3.5", isLiked && "fill-current")} />
+                            <ThumbsUp className={cn("h-3 w-3 sm:h-3.5 sm:w-3.5", isLiked && "fill-current")} />
                             <span>{likesCount}</span>
                         </Button>
 
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 px-2 gap-1.5 rounded-full text-xs text-slate-500 hover:bg-slate-100"
+                            className="h-7 sm:h-8 px-1.5 sm:px-2 gap-1 sm:gap-1.5 rounded-full text-xs text-slate-500 hover:bg-slate-100"
                         >
-                            <MessageCircle className="h-3.5 w-3.5" />
+                            <MessageCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             <span className="hidden sm:inline">Bình luận</span>
                         </Button>
 
@@ -142,13 +146,13 @@ export function ExplorePostCard({ post, viewMode = "list" }: ExplorePostCardProp
                             size="sm"
                             onClick={() => setIsFavorited(!isFavorited)}
                             className={cn(
-                                "h-8 px-2 gap-1.5 rounded-full text-xs",
+                                "h-7 sm:h-8 px-1.5 sm:px-2 gap-1 sm:gap-1.5 rounded-full text-xs",
                                 isFavorited
                                     ? "text-amber-500 bg-amber-50"
                                     : "text-slate-500 hover:bg-slate-100"
                             )}
                         >
-                            <Star className={cn("h-3.5 w-3.5", isFavorited && "fill-current")} />
+                            <Star className={cn("h-3 w-3 sm:h-3.5 sm:w-3.5", isFavorited && "fill-current")} />
                             <span className="hidden sm:inline">Yêu thích</span>
                         </Button>
                     </div>
