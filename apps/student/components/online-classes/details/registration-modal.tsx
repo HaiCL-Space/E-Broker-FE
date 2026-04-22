@@ -13,7 +13,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Textarea } from "@workspace/ui/components/textarea"
-import type { OnlineClass } from "./online-class-card"
+import type { OnlineClass } from "../online-class-card"
 
 interface RegistrationModalProps {
   classItem: OnlineClass
@@ -124,7 +124,7 @@ export function RegistrationModal({ classItem, open, onOpenChange }: Registratio
             <Input
               id="email"
               type="email"
-              placeholder="nguyenvana@example.com"
+              placeholder="nguyenvana@e-broker.com"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required

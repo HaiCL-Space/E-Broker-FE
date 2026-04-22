@@ -72,17 +72,18 @@ export default function OnlineClassDetailPage() {
   const participants = classParticipants[classItem.id] || []
 
   return (
-    <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-4 sm:gap-6 lg:gap-8 px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
       {/* Back Link */}
       <div>
         <Link href="/online-classes">
           <Button
             variant="ghost"
             size="sm"
-            className="gap-2 text-slate-600 hover:text-slate-900"
+            className="gap-2 text-slate-600 hover:text-slate-900 -ml-2 sm:ml-0"
           >
             <ArrowLeft className="h-4 w-4" />
-            Quay lại Danh sách lớp học
+            <span className="hidden sm:inline">Quay lại Danh sách lớp học</span>
+            <span className="sm:hidden">Quay lại</span>
           </Button>
         </Link>
       </div>
@@ -98,10 +99,10 @@ export default function OnlineClassDetailPage() {
       <ClassTabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Content */}
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-1 min-w-0">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+        <div className="flex-1 min-w-0 order-2 lg:order-1">
           {activeTab === "details" ? (
-            <div className="space-y-8">
+            <div className="space-y-4 sm:space-y-6 lg:space-y-8">
               <ClassMeetingLink meetingLink={classItem.meetingLink} />
               <ClassDescription
                 title={classItem.title}
@@ -116,7 +117,7 @@ export default function OnlineClassDetailPage() {
           )}
         </div>
 
-        <div className="w-full lg:w-80 flex-shrink-0">
+        <div className="w-full lg:w-72 xl:w-80 flex-shrink-0 order-1 lg:order-2">
           <ClassSidebar instructor={classItem.instructor} />
         </div>
       </div>

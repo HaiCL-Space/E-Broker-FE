@@ -4,7 +4,7 @@ import { Globe, PlayCircle, User, Users } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { Badge } from "@workspace/ui/components/badge"
 import { cn } from "@workspace/ui/lib/utils"
-import type { OnlineClass } from "./online-class-card"
+import type { OnlineClass } from "../online-class-card"
 
 const statusStyles = {
   available: {

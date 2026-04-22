@@ -15,13 +15,13 @@ interface ClassTabsProps {
 
 export function ClassTabs({ tabs, activeTab, onTabChange }: ClassTabsProps) {
   return (
-    <div className="flex items-center gap-1 border-b border-slate-200 dark:border-slate-700">
+    <div className="flex items-center border-b border-slate-200 dark:border-slate-700">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
           className={cn(
-            "px-6 py-3 text-sm font-medium transition-colors relative",
+            "flex-1 sm:flex-none sm:px-6 py-3 text-sm font-medium transition-colors relative text-center sm:text-left whitespace-nowrap",
             activeTab === tab.id
               ? "text-primary"
               : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
