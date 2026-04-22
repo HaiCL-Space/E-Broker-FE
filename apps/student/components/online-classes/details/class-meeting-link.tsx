@@ -56,7 +56,7 @@ export function ClassMeetingLink({ meetingLink }: ClassMeetingLinkProps) {
           </p>
         </div>
       </div>
-      <div className="flex gap-2 mt-3">
+      <div className="flex flex-col sm:flex-row gap-2 mt-3">
         <Button
           variant="outline"
           size="sm"
@@ -66,7 +66,8 @@ export function ClassMeetingLink({ meetingLink }: ClassMeetingLinkProps) {
           {copied ? (
             <>
               <Check className="h-4 w-4 text-green-500" />
-              Đã sao chép
+              <span className="hidden sm:inline">Đã sao chép</span>
+              <span className="sm:hidden">Đã copy</span>
             </>
           ) : (
             <>
