@@ -1,6 +1,7 @@
 import { ApiError } from "./types"
 import { AuthService } from "./services/auth.service"
 import { CoursesService } from "./services/courses.service"
+import { LessonsService } from "./services/lessons.service"
 import { MailsService } from "./services/mails.service"
 import { SlidesService } from "./services/slides.service"
 import { GamesService } from "./services/games.service"
@@ -17,6 +18,7 @@ export class ApiClient {
   // ─── Services ──────────────────────────────────────────────────────────────
   public readonly auth: AuthService
   public readonly courses: CoursesService
+  public readonly lessons: LessonsService
   public readonly mails: MailsService
   public readonly slides: SlidesService
   public readonly games: GamesService
@@ -32,6 +34,7 @@ export class ApiClient {
 
     this.auth = new AuthService(this)
     this.courses = new CoursesService(this)
+    this.lessons = new LessonsService(this)
     this.mails = new MailsService(this)
     this.slides = new SlidesService(this)
     this.games = new GamesService(this)
