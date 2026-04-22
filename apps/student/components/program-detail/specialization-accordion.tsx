@@ -22,6 +22,7 @@ import {
   Receipt,
   Play,
   Clock,
+  type LucideIcon,
 } from "lucide-react"
 
 interface SpecializationAccordionProps {
@@ -31,19 +32,19 @@ interface SpecializationAccordionProps {
 }
 
 // Map icon theo index
-const getIconForSpecialization = (index: number) => {
-  const icons = [
+const getIconForSpecialization = (index: number): LucideIcon => {
+  const icons: LucideIcon[] = [
     Gavel, Map, TrendingUp, Calculator, Wallet,
     Handshake, Megaphone, Receipt, FileText, MessageSquare,
   ]
-  return icons[index % icons.length]
+  return icons[index % icons.length] ?? Gavel
 }
 
-const getAdvancedIcon = (index: number) => {
-  const icons = [
+const getAdvancedIcon = (index: number): LucideIcon => {
+  const icons: LucideIcon[] = [
     TrendingUp, FileText, Calculator, Wallet, MessageSquare,
   ]
-  return icons[index % icons.length]
+  return icons[index % icons.length] ?? TrendingUp
 }
 
 // Component Lesson Item
@@ -67,13 +68,12 @@ function LessonItem({
       className="flex items-center gap-4 p-4 rounded-xl hover:bg-[#f0f4ff] transition-colors group"
     >
       {/* Số thứ tự */}
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 ${
-        isCompleted
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 ${isCompleted
           ? "bg-[#0040a1] text-white"
           : isInProgress
             ? "bg-[#ff9800] text-white"
             : "bg-[#e7e8e9] text-[#737785]"
-      }`}>
+        }`}>
         {index + 1}
       </div>
 
@@ -145,16 +145,14 @@ function AccordionItem({
       <button
         onClick={() => !isLocked && setIsOpen(!isOpen)}
         disabled={isLocked}
-        className={`w-full flex items-center gap-4 p-5 text-left transition-colors ${
-          isLocked
+        className={`w-full flex items-center gap-4 p-5 text-left transition-colors ${isLocked
             ? "cursor-not-allowed bg-[#f8f9fa]"
             : "hover:bg-[#f0f4ff] cursor-pointer"
-        }`}
+          }`}
       >
         {/* Icon */}
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
-          isLocked ? "bg-[#e7e8e9] grayscale opacity-50" : "bg-[#dae2ff]"
-        }`}>
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${isLocked ? "bg-[#e7e8e9] grayscale opacity-50" : "bg-[#dae2ff]"
+          }`}>
           <IconComponent className={`w-6 h-6 ${isLocked ? "text-[#737785]" : "text-[#0040a1]"}`} />
         </div>
 
@@ -178,8 +176,8 @@ function AccordionItem({
             <div className="flex items-center gap-2 text-xs font-semibold">
               <span className={
                 isCompleted ? "text-[#0040a1]" :
-                isInProgress ? "text-[#ff9800]" :
-                "text-[#737785]"
+                  isInProgress ? "text-[#ff9800]" :
+                    "text-[#737785]"
               }>
                 {specialization.progress}%
               </span>
@@ -189,11 +187,10 @@ function AccordionItem({
             </div>
             <div className="w-24 h-1.5 bg-[#e7e8e9] rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all ${
-                  isCompleted ? "bg-[#0040a1]" :
-                  isInProgress ? "bg-[#ff9800]" :
-                  "bg-[#c3c6d6]"
-                }`}
+                className={`h-full rounded-full transition-all ${isCompleted ? "bg-[#0040a1]" :
+                    isInProgress ? "bg-[#ff9800]" :
+                      "bg-[#c3c6d6]"
+                  }`}
                 style={{ width: `${specialization.progress}%` }}
               />
             </div>
@@ -201,9 +198,8 @@ function AccordionItem({
 
           {/* Toggle */}
           {!isLocked && (
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-              isOpen ? "bg-[#0040a1] text-white rotate-180" : "bg-[#e7e8e9] text-[#737785]"
-            }`}>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isOpen ? "bg-[#0040a1] text-white rotate-180" : "bg-[#e7e8e9] text-[#737785]"
+              }`}>
               <ChevronDown className="w-5 h-5" />
             </div>
           )}

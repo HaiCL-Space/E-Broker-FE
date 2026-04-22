@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Specialization } from "@/lib/training-types"
-import { BookOpen, Lock, Brain, TrendingUp, Building, Factory, Cpu, LineChart } from "lucide-react"
+import { BookOpen, Lock, Brain, TrendingUp, Building, Factory, Cpu, LineChart, type LucideIcon } from "lucide-react"
 
 interface AdvancedSpecializationsProps {
   specializations: Specialization[]
@@ -8,8 +8,8 @@ interface AdvancedSpecializationsProps {
 }
 
 // Map icon cho các chuyên đề nâng cao
-const getAdvancedIcon = (index: number) => {
-  const icons = [
+const getAdvancedIcon = (index: number): LucideIcon => {
+  const icons: LucideIcon[] = [
     TrendingUp,    // Đầu tư
     Building,       // Phát triển dự án
     LineChart,      // M&A
@@ -17,7 +17,7 @@ const getAdvancedIcon = (index: number) => {
     Cpu,            // PropTech
     Brain,          // Mặc định
   ]
-  return icons[index % icons.length]
+  return icons[index % icons.length] ?? Brain
 }
 
 // Component hiển thị các chuyên đề nâng cao (bị khóa)

@@ -28,7 +28,7 @@ interface HeaderProps {
 const navLinks = [
   { href: "/", label: "Trung tâm" },
   { href: "/timeline", label: "Dòng thời gian" },
-  { href: "/search", label: "Tìm kiếm" },
+  { href: "/explore", label: "Mục khám phá" },
   { href: "/training", label: "Đào tạo" },
   { href: "/online-classes", label: "Lớp học trực tuyến" },
 ]

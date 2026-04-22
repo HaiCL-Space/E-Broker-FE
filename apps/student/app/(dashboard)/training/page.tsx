@@ -52,8 +52,6 @@ export default function TrainingPage() {
             ))}
           </div>
         </section>
-
-        <NewsletterSection />
       </main>
     </div>
   )
