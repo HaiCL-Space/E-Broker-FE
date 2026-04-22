@@ -3,11 +3,9 @@
 import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
 import {
-  Search,
   Bell,
   Settings,
   School,
-  BookOpen,
   Calendar,
   Megaphone,
   LogOut,
@@ -28,21 +26,12 @@ interface HeaderProps {
 const navLinks = [
   { href: "/", label: "Trung tâm" },
   { href: "/timeline", label: "Dòng thời gian" },
-  { href: "/search", label: "Tìm kiếm" },
+  { href: "/explore", label: "Mục khám phá" },
   { href: "/training", label: "Đào tạo" },
   { href: "/online-classes", label: "Lớp học trực tuyến" },
 ]
 
-// Fake search results dựa trên courses
-const searchResults = [
-  { id: "1", type: "course", title: "Cấu trúc thuật toán nâng cao", href: "/courses/1" },
-  { id: "2", type: "course", title: "Mật mã ứng dụng", href: "/courses/2" },
-  { id: "3", type: "course", title: "Triết học khoa học", href: "/courses/3" },
-  { id: "4", type: "course", title: "Tâm lý học nhận thức", href: "/courses/4" },
-  { id: "5", type: "course", title: "Trực quan hóa dữ liệu", href: "/courses/5" },
-  { id: "6", type: "course", title: "Nhập môn thị giác máy tính", href: "/courses/6" },
-  { id: "7", type: "course", title: "Phân tích dữ liệu với Python", href: "/courses/7" },
-]
+
 
 const getAnnouncementIcon = (type: string) => {
   switch (type) {
@@ -56,15 +45,12 @@ const getAnnouncementIcon = (type: string) => {
 }
 
 export function Header({ currentPath = "/" }: HeaderProps) {
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const searchRef = useRef<HTMLDivElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
   const settingsRef = useRef<HTMLDivElement>(null)
   const profileRef = useRef<HTMLDivElement>(null)
@@ -72,9 +58,6 @@ export function Header({ currentPath = "/" }: HeaderProps) {
   // Đóng popup khi click bên ngoài
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setIsSearchOpen(false)
-      }
       if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
         setIsNotificationsOpen(false)
       }
@@ -89,12 +72,6 @@ export function Header({ currentPath = "/" }: HeaderProps) {
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
-
-  const filteredResults = searchQuery.length > 0
-    ? searchResults.filter((result) =>
-        result.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : []
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-slate-50/80 backdrop-blur-xl dark:border-slate-700/80 dark:bg-slate-950/80">
@@ -124,16 +101,17 @@ export function Header({ currentPath = "/" }: HeaderProps) {
         {/* Navigation Links */}
         <nav className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => {
-            const isActive = currentPath === link.href
+            const isActive = link.href === "/"
+              ? currentPath === link.href
+              : currentPath === link.href || currentPath.startsWith(`${link.href}/`)
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-semibold transition-colors duration-200 ${
-                  isActive
-                    ? "border-b-2 border-blue-700 pb-1 text-blue-700 dark:border-blue-400 dark:text-blue-400"
-                    : "text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-300"
-                }`}
+                className={`text-sm font-semibold transition-colors duration-200 ${isActive
+                  ? "border-b-2 border-blue-700 pb-1 text-blue-700 dark:border-blue-400 dark:text-blue-400"
+                  : "text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-300"
+                  }`}
               >
                 {link.label}
               </Link>
@@ -143,81 +121,7 @@ export function Header({ currentPath = "/" }: HeaderProps) {
 
         {/* Trailing Actions */}
         <div className="flex items-center gap-2.5">
-          {/* Search */}
-          <div className="relative" ref={searchRef}>
-            <button
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 lg:hidden"
-            >
-              <Search className="h-5 w-5" />
-            </button>
 
-            {/* Desktop Search Bar */}
-            <div className="hidden items-center gap-2 rounded-full bg-slate-100 px-4 py-2.5 text-slate-500 transition-all focus-within:ring-2 focus-within:ring-blue-500/50 dark:bg-slate-800 dark:text-slate-400 lg:flex">
-              <Search className="h-4.5 w-4.5 flex-shrink-0" />
-              <input
-                type="text"
-                placeholder="Tìm kiếm khóa học..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchOpen(true)}
-                className="w-48 bg-transparent text-sm outline-none placeholder:text-slate-400"
-              />
-            </div>
-
-            {/* Search Results Dropdown */}
-            {isSearchOpen && (
-              <div className="absolute right-0 top-full mt-2.5 w-80 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
-                {searchQuery.length === 0 ? (
-                  <div className="px-5 py-5 text-center text-sm text-slate-500 dark:text-slate-400">
-                    Nhập từ khóa để tìm kiếm
-                  </div>
-                ) : filteredResults.length === 0 ? (
-                  <div className="px-5 py-5 text-center text-sm text-slate-500 dark:text-slate-400">
-                    Không tìm thấy kết quả
-                  </div>
-                ) : (
-                  <>
-                    <div className="px-5 py-3">
-                      <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                        Khóa học
-                      </h3>
-                    </div>
-                    <div className="max-h-[320px] overflow-y-auto">
-                      {filteredResults.map((result) => (
-                        <Link
-                          key={result.id}
-                          href={result.href}
-                          onClick={() => {
-                            setIsSearchOpen(false)
-                            setSearchQuery("")
-                          }}
-                          className="flex items-center gap-3.5 px-5 py-3.5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                        >
-                          <BookOpen className="h-4.5 w-4.5 flex-shrink-0 text-blue-500 dark:text-blue-400" />
-                          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                            {result.title}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-                    <div className="border-t border-slate-100 dark:border-slate-700/50">
-                      <Link
-                        href={`/search?q=${encodeURIComponent(searchQuery)}`}
-                        onClick={() => {
-                          setIsSearchOpen(false)
-                          setSearchQuery("")
-                        }}
-                        className="block px-5 py-3 text-center text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        Xem tất cả kết quả
-                      </Link>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
 
           {/* Notifications */}
           <div className="relative" ref={notificationsRef}>
@@ -254,9 +158,9 @@ export function Header({ currentPath = "/" }: HeaderProps) {
                       key={announcement.id}
                       className="flex gap-3.5 px-5 py-3.5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
                     >
-                      <div className="mt-0.5 flex h-8.5 w-8.5 flex-shrink-0 items-center justify-center">
+                      {/* <div className="mt-0.5 flex h-8.5 w-8.5 flex-shrink-0 items-center justify-center">
                         {getAnnouncementIcon(announcement.type)}
-                      </div>
+                      </div> */}
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
                           {announcement.title}
@@ -391,19 +295,7 @@ export function Header({ currentPath = "/" }: HeaderProps) {
                       Hồ sơ cá nhân
                     </span>
                   </Link>
-
-                  <Link
-                    href="/my-courses"
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-3.5 px-5 py-3.5 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:hover:bg-slate-800/50 dark:hover:text-slate-100"
-                  >
-                    <BookOpen className="h-4.5 w-4.5 flex-shrink-0 text-slate-500 dark:text-slate-400" />
-                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                      Khóa học của tôi
-                    </span>
-                  </Link>
                 </div>
-
                 <button
                   onClick={() => setIsProfileOpen(false)}
                   className="flex w-full items-center gap-3.5 px-5 py-3.5 text-red-600 transition-colors hover:bg-slate-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-slate-800/50 dark:hover:text-red-300"
@@ -423,17 +315,18 @@ export function Header({ currentPath = "/" }: HeaderProps) {
           <nav className="mx-auto max-w-screen-2xl px-4 py-4">
             <div className="flex flex-col gap-1">
               {navLinks.map((link) => {
-                const isActive = currentPath === link.href
+                const isActive = link.href === "/"
+                  ? currentPath === link.href
+                  : currentPath === link.href || currentPath.startsWith(`${link.href}/`)
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`rounded-lg px-4 py-3 text-sm font-semibold transition-colors ${
-                      isActive
-                        ? "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
-                        : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
-                    }`}
+                    className={`rounded-lg px-4 py-3 text-sm font-semibold transition-colors ${isActive
+                      ? "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
+                      : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
+                      }`}
                   >
                     {link.label}
                   </Link>

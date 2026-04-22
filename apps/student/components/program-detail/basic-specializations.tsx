@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Megaphone,
   Receipt,
+  type LucideIcon,
 } from "lucide-react"
 
 interface BasicSpecializationsProps {
@@ -22,8 +23,8 @@ interface BasicSpecializationsProps {
 }
 
 // Map icon theo thứ tự hoặc loại chuyên đề
-const getIconForSpecialization = (index: number) => {
-  const icons = [
+const getIconForSpecialization = (index: number): LucideIcon => {
+  const icons: LucideIcon[] = [
     Gavel,           // Luật
     Map,             // Quy hoạch
     TrendingUp,      // Thị trường
@@ -35,7 +36,7 @@ const getIconForSpecialization = (index: number) => {
     FileText,        // Đầu tư (nâng cao)
     MessageSquare,   // Phát triển dự án (nâng cao)
   ]
-  return icons[index % icons.length]
+  return icons[index % icons.length] ?? Gavel
 }
 
 // Component hiển thị các chuyên đề nền tảng
@@ -77,13 +78,12 @@ export function BasicSpecializations({
                   <IconComponent className="w-5 h-5 text-[#0040a1]" />
                 </div>
                 <span
-                  className={`text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 ${
-                    isCompleted
+                  className={`text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 ${isCompleted
                       ? "text-[#0040a1]"
                       : isInProgress
                         ? "text-[#8b5000]"
                         : "text-[#737785]"
-                  }`}
+                    }`}
                 >
                   {isCompleted && (
                     <>

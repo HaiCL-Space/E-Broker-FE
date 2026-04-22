@@ -9,6 +9,12 @@ const nextConfig = {
         port: "",
         pathname: "/aida-public/**",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   async rewrites() {
