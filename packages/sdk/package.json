@@ -19,6 +19,7 @@
     "./services/courses": "./src/services/courses.service.ts",
     "./services/lessons": "./src/services/lessons.service.ts",
     "./services/mails": "./src/services/mails.service.ts",
+    "./services/notifications": "./src/services/notifications.service.ts",
     "./services/slides": "./src/services/slides.service.ts",
     "./services/games": "./src/services/games.service.ts",
     "./services/users": "./src/services/users.service.ts",
@@ -26,6 +27,7 @@
     "./types/courses": "./src/types/courses.types.ts",
     "./types/lessons": "./src/types/lessons.types.ts",
     "./types/mails": "./src/types/mails.types.ts",
+    "./types/notifications": "./src/types/notifications.types.ts",
     "./types/slides": "./src/types/slides.types.ts",
     "./types/games": "./src/types/games.types.ts"
   }

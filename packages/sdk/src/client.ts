@@ -3,6 +3,7 @@ import { AuthService } from "./services/auth.service"
 import { CoursesService } from "./services/courses.service"
 import { LessonsService } from "./services/lessons.service"
 import { MailsService } from "./services/mails.service"
+import { NotificationsService } from "./services/notifications.service"
 import { SlidesService } from "./services/slides.service"
 import { GamesService } from "./services/games.service"
 import { UsersService } from "./services/users.service"
@@ -20,6 +21,7 @@ export class ApiClient {
   public readonly courses: CoursesService
   public readonly lessons: LessonsService
   public readonly mails: MailsService
+  public readonly notifications: NotificationsService
   public readonly slides: SlidesService
   public readonly games: GamesService
   public readonly users: UsersService
@@ -36,6 +38,7 @@ export class ApiClient {
     this.courses = new CoursesService(this)
     this.lessons = new LessonsService(this)
     this.mails = new MailsService(this)
+    this.notifications = new NotificationsService(this)
     this.slides = new SlidesService(this)
     this.games = new GamesService(this)
     this.users = new UsersService(this)
